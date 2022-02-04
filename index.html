@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>搬砖交互地图测试</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <style>
+body { margin:0; padding:0; }
+#map { position:absolute; top:0; bottom:0; width:100%; }
+
+.map-overlay {
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    position: absolute;
+    width: 17%;
+    top: 0;
+    left: 0;
+    padding: 10px;
+}
+
+.map-overlay .map-overlay-inner {
+    background-color: #fff;
+    box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.map-overlay table {
+    border: none;
+    width: 100%;
+}
+
+.map-overlay h2 {
+    line-height: 24px;
+    display: block;
+    margin: 0 0 10px;
+}
+
+.map-overlay label {
+    font: 16px/18px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    vertical-align: bottom;
+    margin: 0;
+    padding: 0;
+}
+
+.map-overlay .legend .bar {
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(to right, #FCA107, #7F3121);
+}
+
+.map-overlay input {
+    display: inline;
+    vertical-align: middle;
+    margin: 5px;
+    padding: 0;
+}
+
+.map-overlay p.credit {
+   margin: 5px 0 0 0;
+   padding: 0;
+}
+
+    </style>
+</head>
+<body>
+
+
+<div id='map'></div>
+
+<div class='map-overlay'>
+    <div class='map-overlay-inner'>
+        <h2>搬砖交互地图测试</h2>
+        <tr><td><p class="cityfly">世界: <a href="#" class="citylink0" id="world">World</a> &nbsp;</p>
+         </td></tr> 
+        <tr><td><p class="cityfly">大区域ZOOM: <a href="#" class="citylink" id="birm">Birmingham</a> &nbsp;<a href="#" class="citylink" id="bris">Bristol</a> &nbsp;<a href="#" class="citylink" id="leed">Leeds</a> &nbsp;<a href="#" class="citylink" id="lond">London</a> &nbsp;<a href="#" class="citylink" id="manc">Manchester</a> &nbsp;<a href="#" class="citylink" id="newc">Newcastle</a></p>
+         </td></tr>
+        <tr><td><p class="cityfly">小区域ZOOM: <a href="#" class="citylink2" id="birm">Birmingham</a> &nbsp;<a href="#" class="citylink2" id="bris">Bristol</a> &nbsp;<a href="#" class="citylink2" id="leed">Leeds</a> &nbsp;<a href="#" class="citylink2" id="lond">London</a> &nbsp;<a href="#" class="citylink2" id="manc">Manchester</a> &nbsp;<a href="#" class="citylink2" id="newc">Newcastle</a></p>
+         </td></tr>
+         </table>
+         <p class="credit">本版本为搬砖APP交互地图DEMO <a href="http://citygeographics.org">搬砖APP</a>.</p>
+</div>
+</div>
+
+
+
+
+    <script>
+
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZHVuY2FuMjAwMSIsImEiOiIyRDhtOE1nIn0.OA5QmCprkPbOoxZog8HIow'; // Put your Mapbox Public Access token here
+
+    // Load a new map in the 'map' HTML div
+    var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/duncan2001/cjckdm9hn24qo2qmswnj13555', // map background layer location
+    center: [0, 51.5], // starting position [lng, lat]
+    zoom: 8, // starting zoom
+    pitch: 50 // tilt of the viewpoint in degrees
+    });
+
+
+    map.on('load', function() {
+      // Set global light properties which influence 3D layer shadows
+      map.setLight({color: "#fff", intensity: 0.15, position: [1.15, 210, 30]});
+      // Add standard navigation control
+      map.addControl(new mapboxgl.NavigationControl());
+
+
+
+
+    //====================================================
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/location.png',
+    (error, image) => {
+    if (error) throw error;
+
+    // Add the image to the map style.
+    map.addImage('location', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('location', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [-1.89, 52.4862]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'location',
+        'type': 'symbol',
+        'source': 'location', // reference the data source
+        'layout': {
+        'icon-image': 'location', // reference the image
+        'icon-size': {
+                             stops: [[8, 0.2], [10, 0.01], [12, 0.0], [16, 0.0]]
+                         }
+        }
+        });
+        }
+        );
+//======================================================    
+   
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/20220127231021.jpg',
+    (error, image) => {
+    if (error) throw error;
+//    if (!map.hasImage("cat")) map.addImage("cat",image)    
+        // Add the image to the map style.
+    map.addImage('1', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('point', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [-1.8904, 52.4862]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'point',
+        'type': 'symbol',
+        'source': 'point', // reference the data source
+        'layout': {
+        'icon-image': '1', // reference the image
+        'icon-size': {
+                             stops: [[8, 0.0], [10, 0.05], [12, 0.1], [16, 0.5]]
+                         }
+        }
+        });
+        }
+        );
+
+//====================================================
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/20220127231021.jpg',
+    (error, image) => {
+    if (error) throw error;
+
+    // Add the image to the map style.
+    map.addImage('2', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('point2', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [-1.8799, 52.88]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'point2',
+        'type': 'symbol',
+        'source': 'point2', // reference the data source
+        'layout': {
+        'icon-image': '2', // reference the image
+        'icon-size': {
+                             stops: [[8, 0.01], [10, 0.05], [12, 0.1], [16, 0.5]]
+                         }
+        }
+        });
+        }
+        );
+//======================================================
+            map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/20220127231021.jpg',
+    (error, image) => {
+    if (error) throw error;
+
+    // Add the image to the map style.
+    map.addImage('3', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('point3', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [-1.87, 52.99]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'point3',
+        'type': 'symbol',
+        'source': 'point3', // reference the data source
+        'layout': {
+        'icon-image': '3', // reference the image
+        'icon-size': {
+                             stops: [[8, 0.01], [10, 0.05], [12, 0.1], [16, 0.5]]
+                         }
+        }
+        });
+        }
+        );
+//======================================================
+                map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/20220127231021.jpg',
+    (error, image) => {
+    if (error) throw error;
+
+    // Add the image to the map style.
+    map.addImage('4', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('point4', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [-1.88, 52.3]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'point4',
+        'type': 'symbol',
+        'source': 'point4', // reference the data source
+        'layout': {
+        'icon-image': '4', // reference the image
+        'icon-size': {
+                             stops: [[8, 0.01], [10, 0.05], [12, 0.1], [16, 0.5]]
+                         }
+        }
+        });
+        }
+        );
+//======================================================
+                map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/20220127231021.jpg',
+    (error, image) => {
+    if (error) throw error;
+
+    // Add the image to the map style.
+    map.addImage('5', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('point5', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [-1.877, 52.5]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'point5',
+        'type': 'symbol',
+        'source': 'point5', // reference the data source
+        'layout': {
+        'icon-image': '5', // reference the image
+        'icon-size': {
+                             stops: [[8, 0.01], [10, 0.05], [12, 0.1], [16, 0.5]]
+                         }
+        }
+        });
+        }
+        );
+//======================================================
+                map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/20220127231021.jpg',
+    (error, image) => {
+    if (error) throw error;
+
+    // Add the image to the map style.
+    map.addImage('6', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('point6', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [-1.86, 53]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'point6',
+        'type': 'symbol',
+        'source': 'point6', // reference the data source
+        'layout': {
+        'icon-image': '6', // reference the image
+        'icon-size': {
+                             stops: [[8, 0.01], [10, 0.05], [12, 0.1], [16, 0.5]]
+                         }
+        }
+        });
+        }
+        );
+//======================================================
+                map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/20220127231021.jpg',
+    (error, image) => {
+    if (error) throw error;
+
+    // Add the image to the map style.
+    map.addImage('7', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('point7', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [-1.89, 53]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'point7',
+        'type': 'symbol',
+        'source': 'point7', // reference the data source
+        'layout': {
+        'icon-image': '7', // reference the image
+        'icon-size': {
+                             stops: [[8, 0.01], [10, 0.05], [12, 0.1], [16, 0.5]]
+                         }
+        }
+        });
+        }
+        );
+//======================================================
+                map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/20220127231021.jpg',
+    (error, image) => {
+    if (error) throw error;
+
+    // Add the image to the map style.
+    map.addImage('8', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('point8', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [-1.87, 52]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'point8',
+        'type': 'symbol',
+        'source': 'point8', // reference the data source
+        'layout': {
+        'icon-image': '8', // reference the image
+        'icon-size': {
+                             stops: [[8, 0.01], [10, 0.05], [12, 0.1], [16, 0.5]]
+                         }
+        }
+        });
+        }
+        );
+//======================================================
+//======================================================
+//======================================================
+
+// Add the label layer
+	map.addLayer({
+		'id': 'labels',
+		'type': 'symbol',
+        source: {
+          type: 'vector',
+          url: 'mapbox://duncan2001.b6rqk9s2' // Your Mapbox tileset Map ID
+        },
+		'source-layer': 'LabelCities2-6qmjf4', // name of tilesets
+		'layout': {
+			'text-field': '{Name2}',
+			'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+			'text-size': 14
+		},
+		'paint': {
+			'text-color': 'rgba(0,0,0,0.8)',
+			'text-halo-color': '#fff',
+			'text-halo-width': 1
+		}
+	});
+
+
+
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink0');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "world": long=-1.8904; lat=52.4862; break;
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 2,
+					speed: 0.3,
+					pitch: 50
+					});
+			});
+		}
+
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "birm": long=-1.8904; lat=52.4862; break;
+					case "bris": long=-2.5879; lat=51.4545; break;
+					case "leed": long=-1.5491; lat=53.8008; break;
+					case "lond": long=-0.1278; lat=51.5074; break;
+					case "manc": long=-2.2426; lat=53.4808; break;
+					case "newc": long=-1.6178; lat=54.9783; break;
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 9,
+					speed: 0.3,
+					pitch: 50
+					});
+			});
+		}
+        
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink2');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "birm": long=-1.8904; lat=52.4862; break;
+					case "bris": long=-2.5879; lat=51.4545; break;
+					case "leed": long=-1.5491; lat=53.8008; break;
+					case "lond": long=-0.1278; lat=51.5074; break;
+					case "manc": long=-2.2426; lat=53.4808; break;
+					case "newc": long=-1.6178; lat=54.9783; break;
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 14,
+					speed: 0.3,
+					pitch: 50
+					});
+			});
+		}
+
+});
+
+</script>
+
+</body>
+</html>
