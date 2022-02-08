@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>搬砖交互地图测试</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <style>
+body { margin:0; padding:0; }
+#map { position:absolute; top:0; bottom:0; width:100%; }
+
+.map-overlay {
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    position: absolute;
+    width: 17%;
+    top: 0;
+    left: 0;
+    padding: 10px;
+}
+
+.map-overlay .map-overlay-inner {
+    background-color: #fff;
+    box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.map-overlay table {
+    border: none;
+    width: 100%;
+}
+
+.map-overlay h2 {
+    line-height: 24px;
+    display: block;
+    margin: 0 0 10px;
+}
+
+.map-overlay label {
+    font: 16px/18px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    vertical-align: bottom;
+    margin: 0;
+    padding: 0;
+}
+
+.map-overlay .legend .bar {
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(to right, #FCA107, #7F3121);
+}
+
+.map-overlay input {
+    display: inline;
+    vertical-align: middle;
+    margin: 5px;
+    padding: 0;
+}
+
+.map-overlay p.credit {
+   margin: 5px 0 0 0;
+   padding: 0;
+}
+
+    </style>
+</head>
+<body>
+
+
+<div id='map'></div>
+
+<div class='map-overlay'>
+    <div class='map-overlay-inner'>
+        <h2>搬砖交互地图测试</h2>
+        <tr><td><p class="cityfly">世界: <a href="#" class="citylink0" id="world">World</a> &nbsp;</p>
+         </td></tr> 
+        <tr><td><p class="cityfly">大陆: <a href="#" class="citylink1" id="continent">Continent</a> &nbsp;</p>
+         </td></tr> 
+        <tr><td><p class="cityfly">大区域ZOOM: <a href="#" class="citylink" id="birm">Beijing</a> &nbsp;<a href="#" class="citylink" id="bris">Guangzhou</a> &nbsp;<a href="#" class="citylink" id="leed">Shanghai</a> </p>
+         </td></tr>
+        <tr><td><p class="cityfly">小区域ZOOM: <a href="#" class="citylink2" id="birm">Beijing</a> &nbsp;<a href="#" class="citylink2" id="bris">Guangzhou</a> &nbsp;<a href="#" class="citylink2" id="leed">Shanghai</a> </p>
+         </td></tr>
+         </table>
+         <p class="credit">本版本为搬砖APP交互地图DEMO <a href="www.baidu.com">搬砖APP</a>.</p>
+</div>
+</div>
+
+
+
+
+    <script>
+
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamFja2V5dCIsImEiOiJjamExdDlkY2g5Z3ByMndzNGdidnNxMTJ3In0.apVycIDJ6tcix0mthm3-TQ'; // Put your Mapbox Public Access token here
+
+    // Load a new map in the 'map' HTML div
+    var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/jackeyt/ckyt4smax000314t84yqn7gi6', // map background layer location
+    center: [116.456, 39.909], // starting position [lng, lat]long=-1.8904; lat=52.4862
+    zoom: 2, // starting zoom
+    pitch: 50 // tilt of the viewpoint in degrees
+    });
+
+
+    map.on('load', function() {
+      // Set global light properties which influence 3D layer shadows
+      map.setLight({color: "#fff", intensity: 0.15, position: [1.15, 210, 30]});
+      // Add standard navigation control
+      map.addControl(new mapboxgl.NavigationControl());
+
+
+
+
+    //====================================================
+//    map.loadImage(
+//    'https://raw.githubusercontent.com/Jackeytanlor/Block/main/location.png',
+//    (error, image) => {
+//    if (error) throw error;
+//
+//    // Add the image to the map style.
+//    map.addImage('location', image);
+//
+//    // Add a data source containing one point feature.
+//    map.addSource('location', {
+//    'type': 'geojson',
+//    'data': {
+//    'type': 'FeatureCollection',
+//    'features': [
+//    {
+//    'type': 'Feature',
+//
+//    'geometry': {
+//    'type': 'Point',
+//    'coordinates': [-1.89, 52.4862]
+//    }
+//    }
+//    ]
+//    }
+//    });
+//
+//    // Add a layer to use the image to represent the data.
+//    map.addLayer({
+//        'id': 'location',
+//        'type': 'symbol',
+//        'source': 'location', // reference the data source
+//        'layout': {
+//        'icon-image': 'location', // reference the image
+//        'icon-size': {
+//                             stops: [[8, 0.2], [10, 0.01], [12, 0.0], [16, 0.0]]
+//                         }
+//        }
+//        });
+//        }
+//        );
+//======================================================    
+//该部分为zoom=3时的
+//=========================================================================================
+
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ06.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('BJ06', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('BJ06', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [116.456, 39.909]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'BJ06',
+        'type': 'symbol',
+        'source': 'BJ06', // reference the data source
+        'layout': {
+        'icon-image': 'BJ06', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+        
+//=========================================================================================
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BY/BY01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('BY01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('BY01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [104.534, 36.534]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'BY01',
+        'type': 'symbol',
+        'source': 'BY01', // reference the data source
+        'layout': {
+        'icon-image': 'BY01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================   
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/EZ/EZ01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('EZ01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('EZ01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [114.791, 30.319]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'EZ01',
+        'type': 'symbol',
+        'source': 'EZ01', // reference the data source
+        'layout': {
+        'icon-image': 'EZ01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/HS/HS01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('HS01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('HS01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [115.862, 37.716]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'HS01',
+        'type': 'symbol',
+        'source': 'HS01', // reference the data source
+        'layout': {
+        'icon-image': 'HS01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('GZ01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('GZ01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [113.504, 23.251]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'GZ01',
+        'type': 'symbol',
+        'source': 'GZ01', // reference the data source
+        'layout': {
+        'icon-image': 'GZ01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+//=========================================================================================
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JD/JD01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('JD01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('JD01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [117.177, 29.338]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'JD01',
+        'type': 'symbol',
+        'source': 'JD01', // reference the data source
+        'layout': {
+        'icon-image': 'JD01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JN/JN01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('JN01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('JN01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [117.212, 36.854]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'JN01',
+        'type': 'symbol',
+        'source': 'JN01', // reference the data source
+        'layout': {
+        'icon-image': 'JN01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================  
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/KS/KS01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('KS01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('KS01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [120.980, 31.325]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'KS01',
+        'type': 'symbol',
+        'source': 'KS01', // reference the data source
+        'layout': {
+        'icon-image': 'KS01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/LY/LY01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('LY01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('LY01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [112.054, 34.321]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'LY01',
+        'type': 'symbol',
+        'source': 'LY01', // reference the data source
+        'layout': {
+        'icon-image': 'LY01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+ map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('SH01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('SH01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [121.206, 31.101]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'SH01',
+        'type': 'symbol',
+        'source': 'SH01', // reference the data source
+        'layout': {
+        'icon-image': 'SH01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/WH/WH01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('WH01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('WH01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [114.387, 30.670]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'WH01',
+        'type': 'symbol',
+        'source': 'WH01', // reference the data source
+        'layout': {
+        'icon-image': 'WH01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================
+    map.loadImage(
+    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/XY/XY01.jpg',
+    (error, image) => {
+    if (error) throw error;
+    map.addImage('XY01', image);
+
+    // Add a data source containing one point feature.
+    map.addSource('XY01', {
+    'type': 'geojson',
+    'data': {
+    'type': 'FeatureCollection',
+    'features': [
+    {
+    'type': 'Feature',
+    'geometry': {
+    'type': 'Point',
+    'coordinates': [108.410, 34.873]
+    }
+    }
+    ]
+    }
+    });
+
+    // Add a layer to use the image to represent the data.
+    map.addLayer({
+        'id': 'XY01',
+        'type': 'symbol',
+        'source': 'XY01', // reference the data source
+        'layout': {
+        'icon-image': 'XY01', // reference the image
+        'icon-size': {
+                             stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.7]]
+                         }
+        }
+        });
+        }
+        );
+//=========================================================================================  
+
+//=========================================================================================
+//==================================================================================
+ 
+//==================================================================================
+//==================================================================================
+//==================================================================================
+
+
+//==================================================================================
+//==================================================================================
+ //==================================================================================
+
+
+//==================================================================================
+//==================================================================================
+ //==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ02', image);
+    map.addSource('BJ02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.324, 39.766]} }]} });
+    map.addLayer({'id': 'BJ02','type': 'symbol','source': 'BJ02','layout': {'icon-image': 'BJ02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ03', image);
+    map.addSource('BJ03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.27499999999999, 39.873]} }]} });
+    map.addLayer({'id': 'BJ03','type': 'symbol','source': 'BJ03','layout': {'icon-image': 'BJ03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ04', image);
+    map.addSource('BJ04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.37199999999999, 39.964999999999996]} }]} });
+    map.addLayer({'id': 'BJ04','type': 'symbol','source': 'BJ04','layout': {'icon-image': 'BJ04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ05', image);
+    map.addSource('BJ05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.42199999999998, 39.922999999999995]} }]} });
+    map.addLayer({'id': 'BJ05','type': 'symbol','source': 'BJ05','layout': {'icon-image': 'BJ05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BY/BY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BY02', image);
+    map.addSource('BY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [104.432, 36.422]} }]} });
+    map.addLayer({'id': 'BY02','type': 'symbol','source': 'BY02','layout': {'icon-image': 'BY02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BY/BY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BY03', image);
+    map.addSource('BY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [104.548, 36.336]} }]} });
+    map.addLayer({'id': 'BY03','type': 'symbol','source': 'BY03','layout': {'icon-image': 'BY03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/EZ/EZ02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('EZ02', image);
+    map.addSource('EZ02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.73599999999999, 30.233]} }]} });
+    map.addLayer({'id': 'EZ02','type': 'symbol','source': 'EZ02','layout': {'icon-image': 'EZ02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/EZ/EZ03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('EZ03', image);
+    map.addSource('EZ03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.79499999999999, 30.297]} }]} });
+    map.addLayer({'id': 'EZ03','type': 'symbol','source': 'EZ03','layout': {'icon-image': 'EZ03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ02', image);
+    map.addSource('GZ02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.60199999999999, 23.232000000000003]} }]} });
+    map.addLayer({'id': 'GZ02','type': 'symbol','source': 'GZ02','layout': {'icon-image': 'GZ02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ03', image);
+    map.addSource('GZ03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.49499999999999, 23.191000000000003]} }]} });
+    map.addLayer({'id': 'GZ03','type': 'symbol','source': 'GZ03','layout': {'icon-image': 'GZ03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ04', image);
+    map.addSource('GZ04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.484, 23.28]} }]} });
+    map.addLayer({'id': 'GZ04','type': 'symbol','source': 'GZ04','layout': {'icon-image': 'GZ04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ05', image);
+    map.addSource('GZ05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.34899999999999, 23.155]} }]} });
+    map.addLayer({'id': 'GZ05','type': 'symbol','source': 'GZ05','layout': {'icon-image': 'GZ05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/HS/HS02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('HS02', image);
+    map.addSource('HS02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [115.741, 37.713]} }]} });
+    map.addLayer({'id': 'HS02','type': 'symbol','source': 'HS02','layout': {'icon-image': 'HS02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/HS/HS03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('HS03', image);
+    map.addSource('HS03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [115.713, 37.845]} }]} });
+    map.addLayer({'id': 'HS03','type': 'symbol','source': 'HS03','layout': {'icon-image': 'HS03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JD/JD02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD02', image);
+    map.addSource('JD02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.16000000000001, 29.231]} }]} });
+    map.addLayer({'id': 'JD02','type': 'symbol','source': 'JD02','layout': {'icon-image': 'JD02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JD/JD03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD03', image);
+    map.addSource('JD03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.08100000000002, 29.298000000000002]} }]} });
+    map.addLayer({'id': 'JD03','type': 'symbol','source': 'JD03','layout': {'icon-image': 'JD03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JD/JD04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD04', image);
+    map.addSource('JD04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.20900000000002, 29.222]} }]} });
+    map.addLayer({'id': 'JD04','type': 'symbol','source': 'JD04','layout': {'icon-image': 'JD04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JD/JD05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD05', image);
+    map.addSource('JD05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.26500000000001, 29.272000000000002]} }]} });
+    map.addLayer({'id': 'JD05','type': 'symbol','source': 'JD05','layout': {'icon-image': 'JD05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JN/JN02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JN02', image);
+    map.addSource('JN02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.306, 36.847]} }]} });
+    map.addLayer({'id': 'JN02','type': 'symbol','source': 'JN02','layout': {'icon-image': 'JN02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JN/JN03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JN03', image);
+    map.addSource('JN03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.221, 36.811]} }]} });
+    map.addLayer({'id': 'JN03','type': 'symbol','source': 'JN03','layout': {'icon-image': 'JN03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/KS/KS02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('KS02', image);
+    map.addSource('KS02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.045, 31.352999999999998]} }]} });
+    map.addLayer({'id': 'KS02','type': 'symbol','source': 'KS02','layout': {'icon-image': 'KS02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/KS/KS03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('KS03', image);
+    map.addSource('KS03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [120.98, 31.381999999999998]} }]} });
+    map.addLayer({'id': 'KS03','type': 'symbol','source': 'KS03','layout': {'icon-image': 'KS03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/LY/LY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('LY02', image);
+    map.addSource('LY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [112.137, 34.400999999999996]} }]} });
+    map.addLayer({'id': 'LY02','type': 'symbol','source': 'LY02','layout': {'icon-image': 'LY02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/LY/LY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('LY03', image);
+    map.addSource('LY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [112.135, 34.532]} }]} });
+    map.addLayer({'id': 'LY03','type': 'symbol','source': 'LY03','layout': {'icon-image': 'LY03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH02', image);
+    map.addSource('SH02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.309, 31.005]} }]} });
+    map.addLayer({'id': 'SH02','type': 'symbol','source': 'SH02','layout': {'icon-image': 'SH02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH03', image);
+    map.addSource('SH03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.422, 31.096]} }]} });
+    map.addLayer({'id': 'SH03','type': 'symbol','source': 'SH03','layout': {'icon-image': 'SH03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH04', image);
+    map.addSource('SH04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.417, 31.012]} }]} });
+    map.addLayer({'id': 'SH04','type': 'symbol','source': 'SH04','layout': {'icon-image': 'SH04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH05', image);
+    map.addSource('SH05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.378, 31.104]} }]} });
+    map.addLayer({'id': 'SH05','type': 'symbol','source': 'SH05','layout': {'icon-image': 'SH05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/WH/WH02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH02', image);
+    map.addSource('WH02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.26, 30.589000000000002]} }]} });
+    map.addLayer({'id': 'WH02','type': 'symbol','source': 'WH02','layout': {'icon-image': 'WH02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/WH/WH03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH03', image);
+    map.addSource('WH03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.14800000000001, 30.659000000000002]} }]} });
+    map.addLayer({'id': 'WH03','type': 'symbol','source': 'WH03','layout': {'icon-image': 'WH03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/WH/WH04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH04', image);
+    map.addSource('WH04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.13400000000001, 30.649]} }]} });
+    map.addLayer({'id': 'WH04','type': 'symbol','source': 'WH04','layout': {'icon-image': 'WH04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/WH/WH05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH05', image);
+    map.addSource('WH05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.16300000000001, 30.749000000000002]} }]} });
+    map.addLayer({'id': 'WH05','type': 'symbol','source': 'WH05','layout': {'icon-image': 'WH05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/XY/XY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY02', image);
+    map.addSource('XY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.315, 35.021]} }]} });
+    map.addLayer({'id': 'XY02','type': 'symbol','source': 'XY02','layout': {'icon-image': 'XY02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/XY/XY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY03', image);
+    map.addSource('XY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.216, 35.031]} }]} });
+    map.addLayer({'id': 'XY03','type': 'symbol','source': 'XY03','layout': {'icon-image': 'XY03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/XY/XY04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY04', image);
+    map.addSource('XY04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.20299999999999, 35.038]} }]} });
+    map.addLayer({'id': 'XY04','type': 'symbol','source': 'XY04','layout': {'icon-image': 'XY04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/XY/XY05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY05', image);
+    map.addSource('XY05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.17699999999999, 34.927]} }]} });
+    map.addLayer({'id': 'XY05','type': 'symbol','source': 'XY05','layout': {'icon-image': 'XY05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.3], [16, 0.5]]}}});});
+
+//==================================================================================
+//==================================================================================
+
+//==================================================================================
+
+//==================================================================================
+//=========================================================================================
+
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+
+        
+        
+//====================================================
+   
+//    map.loadImage(
+//    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ02.jpg',
+//    (error, image) => {
+//    if (error) throw error;
+//    map.addImage('BJ02', image);
+//
+//    // Add a data source containing one point feature.
+//    map.addSource('BJ02', {
+//    'type': 'geojson',
+//    'data': {
+//    'type': 'FeatureCollection',
+//    'features': [
+//    {
+//    'type': 'Feature',
+//    'geometry': {
+//    'type': 'Point',
+//    'coordinates': [116.8, 40.111]
+//    }
+//    }
+//    ]
+//    }
+//    });
+//
+//    // Add a layer to use the image to represent the data.
+//    map.addLayer({
+//        'id': 'BJ02',
+//        'type': 'symbol',
+//        'source': 'BJ02', // reference the data source
+//        'layout': {
+//        'icon-image': 'BJ02', // reference the image
+//        'icon-size': {
+//                             stops: [[1,0],[4, 0.0],[8, 0], [9, 0.2], [14, 0.3], [16, 0.5]]
+//                         }
+//        }
+//        });
+//        }
+//        );
+//=========================================================================================
+   
+//    map.loadImage(
+//    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ03.jpg',
+//    (error, image) => {
+//    if (error) throw error;
+//        
+//    map.addImage('BJ03', image);
+//
+//    // Add a data source containing one point feature.
+//    map.addSource('BJ03', {
+//    'type': 'geojson',
+//    'data': {
+//    'type': 'FeatureCollection',
+//    'features': [
+//    {
+//    'type': 'Feature',
+//    'geometry': {
+//    'type': 'Point',
+//    'coordinates': [116.029, 40.8]
+//    }
+//    }
+//    ]
+//    }
+//    });
+//
+//    // Add a layer to use the image to represent the data.
+//    map.addLayer({
+//        'id': 'BJ03',
+//        'type': 'symbol',
+//        'source': 'BJ03', // reference the data source
+//        'layout': {
+//        'icon-image': 'BJ03', // reference the image
+//        'icon-size': {
+//                             stops:  [[1,0],[4, 0.0],[8, 0], [9, 0.15], [14, 0.2], [16, 0.5]]
+//                         }
+//        }
+//        });
+//        }
+//        );
+//=========================================================================================
+   
+//=========================================================================================
+//    map.loadImage(
+//    'https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ09.jpg',
+//    (error, image) => {
+//    if (error) throw error;
+//    map.addImage('BJ09', image);
+//
+//    // Add a data source containing one point feature.
+//    map.addSource('BJ09', {
+//    'type': 'geojson',
+//    'data': {
+//    'type': 'FeatureCollection',
+//    'features': [
+//    {
+//    'type': 'Feature',
+//    'geometry': {
+//    'type': 'Point',
+//    'coordinates': [116.4, 39.909]
+//    }
+//    }
+//    ]
+//    }
+//    });
+//
+//    // Add a layer to use the image to represent the data.
+//    map.addLayer({
+//        'id': 'BJ09',
+//        'type': 'symbol',
+//        'source': 'BJ09', // reference the data source
+//        'layout': {
+//        'icon-image': 'BJ09', // reference the image
+//        'icon-size': {
+//                             stops: [[1,0], [12, 0.2], [14, 0.3], [16, 0.5]]
+//                         }
+//        }
+//        });
+//        }
+//        );
+//=========================================================================================        
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ02', image);
+    map.addSource('BJ02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.376, 40.025999999999996]} }]} });
+    map.addLayer({'id': 'BJ02','type': 'symbol','source': 'BJ02','layout': {'icon-image': 'BJ02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ03', image);
+    map.addSource('BJ03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.34400000000001, 40.059]} }]} });
+    map.addLayer({'id': 'BJ03','type': 'symbol','source': 'BJ03','layout': {'icon-image': 'BJ03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ04', image);
+    map.addSource('BJ04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.221, 40.074999999999996]} }]} });
+    map.addLayer({'id': 'BJ04','type': 'symbol','source': 'BJ04','layout': {'icon-image': 'BJ04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ05', image);
+    map.addSource('BJ05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.163, 39.949]} }]} });
+    map.addLayer({'id': 'BJ05','type': 'symbol','source': 'BJ05','layout': {'icon-image': 'BJ05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ06.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ06', image);
+    map.addSource('BJ06', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.205, 40.016]} }]} });
+    map.addLayer({'id': 'BJ06','type': 'symbol','source': 'BJ06','layout': {'icon-image': 'BJ06', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ07.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ07', image);
+    map.addSource('BJ07', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.125, 40.034]} }]} });
+    map.addLayer({'id': 'BJ07','type': 'symbol','source': 'BJ07','layout': {'icon-image': 'BJ07', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ08.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ08', image);
+    map.addSource('BJ08', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.02, 39.935]} }]} });
+    map.addLayer({'id': 'BJ08','type': 'symbol','source': 'BJ08','layout': {'icon-image': 'BJ08', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ09.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ09', image);
+    map.addSource('BJ09', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [115.988, 40.04]} }]} });
+    map.addLayer({'id': 'BJ09','type': 'symbol','source': 'BJ09','layout': {'icon-image': 'BJ09', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BJ/BJ10.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BJ10', image);
+    map.addSource('BJ10', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [116.076, 40.146]} }]} });
+    map.addLayer({'id': 'BJ10','type': 'symbol','source': 'BJ10','layout': {'icon-image': 'BJ10', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BY/BY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BY02', image);
+    map.addSource('BY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [104.593, 36.619]} }]} });
+    map.addLayer({'id': 'BY02','type': 'symbol','source': 'BY02','layout': {'icon-image': 'BY02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/BY/BY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('BY03', image);
+    map.addSource('BY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [104.549, 36.725]} }]} });
+    map.addLayer({'id': 'BY03','type': 'symbol','source': 'BY03','layout': {'icon-image': 'BY03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/EZ/EZ02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('EZ02', image);
+    map.addSource('EZ02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.7, 30.265]} }]} });
+    map.addLayer({'id': 'EZ02','type': 'symbol','source': 'EZ02','layout': {'icon-image': 'EZ02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/EZ/EZ03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('EZ03', image);
+    map.addSource('EZ03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.723, 30.249000000000002]} }]} });
+    map.addLayer({'id': 'EZ03','type': 'symbol','source': 'EZ03','layout': {'icon-image': 'EZ03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ02', image);
+    map.addSource('GZ02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.634, 23.216]} }]} });
+    map.addLayer({'id': 'GZ02','type': 'symbol','source': 'GZ02','layout': {'icon-image': 'GZ02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ03', image);
+    map.addSource('GZ03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.53, 23.131]} }]} });
+    map.addLayer({'id': 'GZ03','type': 'symbol','source': 'GZ03','layout': {'icon-image': 'GZ03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ04', image);
+    map.addSource('GZ04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.612, 23.162]} }]} });
+    map.addLayer({'id': 'GZ04','type': 'symbol','source': 'GZ04','layout': {'icon-image': 'GZ04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ05', image);
+    map.addSource('GZ05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.606, 23.288999999999998]} }]} });
+    map.addLayer({'id': 'GZ05','type': 'symbol','source': 'GZ05','layout': {'icon-image': 'GZ05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ06.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ06', image);
+    map.addSource('GZ06', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.663, 23.208]} }]} });
+    map.addLayer({'id': 'GZ06','type': 'symbol','source': 'GZ06','layout': {'icon-image': 'GZ06', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ07.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ07', image);
+    map.addSource('GZ07', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.64099999999999, 23.168999999999997]} }]} });
+    map.addLayer({'id': 'GZ07','type': 'symbol','source': 'GZ07','layout': {'icon-image': 'GZ07', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ08.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ08', image);
+    map.addSource('GZ08', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.66699999999999, 23.063999999999997]} }]} });
+    map.addLayer({'id': 'GZ08','type': 'symbol','source': 'GZ08','layout': {'icon-image': 'GZ08', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ09.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ09', image);
+    map.addSource('GZ09', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.75699999999999, 23.073999999999998]} }]} });
+    map.addLayer({'id': 'GZ09','type': 'symbol','source': 'GZ09','layout': {'icon-image': 'GZ09', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/GZ/GZ10.jpg',(error, image) => {if (error) throw error;
+    map.addImage('GZ10', image);
+    map.addSource('GZ10', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [113.77499999999999, 23.221999999999998]} }]} });
+    map.addLayer({'id': 'GZ10','type': 'symbol','source': 'GZ10','layout': {'icon-image': 'GZ10', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/HS/HS02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('HS02', image);
+    map.addSource('HS02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [115.829, 37.633]} }]} });
+    map.addLayer({'id': 'HS02','type': 'symbol','source': 'HS02','layout': {'icon-image': 'HS02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/HS/HS03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('HS03', image);
+    map.addSource('HS03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [115.889, 37.651]} }]} });
+    map.addLayer({'id': 'HS03','type': 'symbol','source': 'HS03','layout': {'icon-image': 'HS03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JD/JD02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD02', image);
+    map.addSource('JD02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.162, 29.461000000000002]} }]} });
+    map.addLayer({'id': 'JD02','type': 'symbol','source': 'JD02','layout': {'icon-image': 'JD02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JD/JD03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD03', image);
+    map.addSource('JD03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.173, 29.531000000000002]} }]} });
+    map.addLayer({'id': 'JD03','type': 'symbol','source': 'JD03','layout': {'icon-image': 'JD03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JD/JD04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD04', image);
+    map.addSource('JD04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.299, 29.450000000000003]} }]} });
+    map.addLayer({'id': 'JD04','type': 'symbol','source': 'JD04','layout': {'icon-image': 'JD04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JD/JD05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JD05', image);
+    map.addSource('JD05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.27900000000001, 29.339000000000002]} }]} });
+    map.addLayer({'id': 'JD05','type': 'symbol','source': 'JD05','layout': {'icon-image': 'JD05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JN/JN02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JN02', image);
+    map.addSource('JN02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.357, 36.918]} }]} });
+    map.addLayer({'id': 'JN02','type': 'symbol','source': 'JN02','layout': {'icon-image': 'JN02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/JN/JN03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('JN03', image);
+    map.addSource('JN03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [117.213, 36.782]} }]} });
+    map.addLayer({'id': 'JN03','type': 'symbol','source': 'JN03','layout': {'icon-image': 'JN03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/KS/KS02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('KS02', image);
+    map.addSource('KS02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.02300000000001, 31.273]} }]} });
+    map.addLayer({'id': 'KS02','type': 'symbol','source': 'KS02','layout': {'icon-image': 'KS02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/KS/KS03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('KS03', image);
+    map.addSource('KS03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [120.94700000000002, 31.163]} }]} });
+    map.addLayer({'id': 'KS03','type': 'symbol','source': 'KS03','layout': {'icon-image': 'KS03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/LY/LY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('LY02', image);
+    map.addSource('LY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [112.08200000000001, 34.282]} }]} });
+    map.addLayer({'id': 'LY02','type': 'symbol','source': 'LY02','layout': {'icon-image': 'LY02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/LY/LY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('LY03', image);
+    map.addSource('LY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [112.048, 34.287]} }]} });
+    map.addLayer({'id': 'LY03','type': 'symbol','source': 'LY03','layout': {'icon-image': 'LY03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH02', image);
+    map.addSource('SH02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.081, 31.233]} }]} });
+    map.addLayer({'id': 'SH02','type': 'symbol','source': 'SH02','layout': {'icon-image': 'SH02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH03', image);
+    map.addSource('SH03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.096, 31.282]} }]} });
+    map.addLayer({'id': 'SH03','type': 'symbol','source': 'SH03','layout': {'icon-image': 'SH03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH04', image);
+    map.addSource('SH04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.14800000000001, 31.19]} }]} });
+    map.addLayer({'id': 'SH04','type': 'symbol','source': 'SH04','layout': {'icon-image': 'SH04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH05', image);
+    map.addSource('SH05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.022, 31.107000000000003]} }]} });
+    map.addLayer({'id': 'SH05','type': 'symbol','source': 'SH05','layout': {'icon-image': 'SH05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH06.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH06', image);
+    map.addSource('SH06', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.15400000000001, 31.159000000000002]} }]} });
+    map.addLayer({'id': 'SH06','type': 'symbol','source': 'SH06','layout': {'icon-image': 'SH06', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH07.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH07', image);
+    map.addSource('SH07', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.293, 31.063000000000002]} }]} });
+    map.addLayer({'id': 'SH07','type': 'symbol','source': 'SH07','layout': {'icon-image': 'SH07', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH08.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH08', image);
+    map.addSource('SH08', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.17800000000001, 30.933000000000003]} }]} });
+    map.addLayer({'id': 'SH08','type': 'symbol','source': 'SH08','layout': {'icon-image': 'SH08', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH09.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH09', image);
+    map.addSource('SH09', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.14000000000001, 30.883000000000003]} }]} });
+    map.addLayer({'id': 'SH09','type': 'symbol','source': 'SH09','layout': {'icon-image': 'SH09', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/SH/SH10.jpg',(error, image) => {if (error) throw error;
+    map.addImage('SH10', image);
+    map.addSource('SH10', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [121.26700000000001, 30.743000000000002]} }]} });
+    map.addLayer({'id': 'SH10','type': 'symbol','source': 'SH10','layout': {'icon-image': 'SH10', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/WH/WH02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH02', image);
+    map.addSource('WH02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.532, 30.585]} }]} });
+    map.addLayer({'id': 'WH02','type': 'symbol','source': 'WH02','layout': {'icon-image': 'WH02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/WH/WH03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH03', image);
+    map.addSource('WH03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.54899999999999, 30.501]} }]} });
+    map.addLayer({'id': 'WH03','type': 'symbol','source': 'WH03','layout': {'icon-image': 'WH03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/WH/WH04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH04', image);
+    map.addSource('WH04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.43499999999999, 30.394000000000002]} }]} });
+    map.addLayer({'id': 'WH04','type': 'symbol','source': 'WH04','layout': {'icon-image': 'WH04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/WH/WH05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('WH05', image);
+    map.addSource('WH05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [114.31599999999999, 30.404000000000003]} }]} });
+    map.addLayer({'id': 'WH05','type': 'symbol','source': 'WH05','layout': {'icon-image': 'WH05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/XY/XY02.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY02', image);
+    map.addSource('XY02', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.347, 34.931]} }]} });
+    map.addLayer({'id': 'XY02','type': 'symbol','source': 'XY02','layout': {'icon-image': 'XY02', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/XY/XY03.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY03', image);
+    map.addSource('XY03', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.33999999999999, 35.009]} }]} });
+    map.addLayer({'id': 'XY03','type': 'symbol','source': 'XY03','layout': {'icon-image': 'XY03', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/XY/XY04.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY04', image);
+    map.addSource('XY04', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.44699999999999, 34.957]} }]} });
+    map.addLayer({'id': 'XY04','type': 'symbol','source': 'XY04','layout': {'icon-image': 'XY04', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+//==================================================================================
+ map.loadImage('https://raw.githubusercontent.com/Jackeytanlor/BRICK_INTERMAP/main/CN/XY/XY05.jpg',(error, image) => {if (error) throw error;
+    map.addImage('XY05', image);
+    map.addSource('XY05', {'type': 'geojson','data': {'type': 'FeatureCollection','features': [{'type': 'Feature','geometry': {'type': 'Point','coordinates': [108.29899999999999, 34.967]} }]} });
+    map.addLayer({'id': 'XY05','type': 'symbol','source': 'XY05','layout': {'icon-image': 'XY05', 'icon-size': {stops: [[1,0],[3, 0.03],[8, 0.1], [9, 0.2], [14, 0.2], [16, 0.3]]}}});});
+
+//==================================================================================
+
+//==================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================        
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+//=========================================================================================
+
+// Add the label layer
+	map.addLayer({
+		'id': 'labels',
+		'type': 'symbol',
+        source: {
+          type: 'vector',
+          url: 'mapbox://duncan2001.b6rqk9s2' // Your Mapbox tileset Map ID
+        },
+		'source-layer': 'LabelCities2-6qmjf4', // name of tilesets
+		'layout': {
+			'text-field': '{Name2}',
+			'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+			'text-size': 14
+		},
+		'paint': {
+			'text-color': 'rgba(0,0,0,0.8)',
+			'text-halo-color': '#fff',
+			'text-halo-width': 1
+		}
+	});
+
+
+
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink0');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "world": long=-1.8904; lat=52.4862; break;
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 2,
+					speed: 0.3,
+					pitch: 50
+					});
+			});
+		}
+
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink1');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "continent": long=116.456; lat=35.909; break;
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 3,
+					speed: 0.3,
+					pitch: 50
+					});
+			});
+		}
+
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "birm": long=116.456; lat=39.909; break;
+					case "bris": long=113.504; lat=23.251; break;
+					case "leed": long=121.206; lat=31.101; break;
+					case "lond": long=-0.1278; lat=51.5074; break;
+					case "manc": long=-2.2426; lat=53.4808; break;
+					case "newc": long=-1.6178; lat=54.9783; break;
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 10,
+					speed: 0.3,
+					pitch: 50
+					});
+			});
+		}
+        
+//Event listener for the zoom to buttons created using a for loop and switch case statement to set lat and long
+var x = document.getElementsByClassName('citylink2');
+var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].addEventListener('click', function(e) {
+
+				var lat,long;
+
+				switch(e.target.id) {
+					case "birm": long=116.456; lat=39.909; break;
+					case "bris": long=113.504; lat=23.251; break;
+					case "leed": long=121.206; lat=31.101; break;
+					case "lond": long=-0.1278; lat=51.5074; break;
+					case "manc": long=-2.2426; lat=53.4808; break;
+					case "newc": long=-1.6178; lat=54.9783; break;
+				}
+
+				map.flyTo({
+					center: [long,lat],
+					zoom: 12,
+					speed: 0.3,
+					pitch: 50
+					});
+			});
+		}
+
+});
+
+</script>
+
+</body>
+</html>
